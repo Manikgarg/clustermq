@@ -33,8 +33,13 @@ worker = function(master, timeout=600, ...) {
             msg = rzmq::receive.socket(socket)
             message(sprintf("received after %.3fs: %s",
                             (proc.time()-tt)[[3]], msg$id))
-        } else
-            stop("Timeout reached, terminating")
+        } else {
+            warning("Timeout reached", immediate.=TRUE)
+            # reset REQ/REP state
+            rzmq::disconnect.socket(socket, master)
+            rzmq::connect.socket(socket, master)
+            break
+        }
 
         switch(msg$id,
             "DO_SETUP" = {

@@ -95,7 +95,7 @@ QSys = R6::R6Class("QSys",
         },
 
         disconnect_worker = function(msg) {
-            private$send()
+            try(private$send())
             private$workers_up = private$workers_up - 1
             private$worker_stats = c(private$worker_stats, list(msg))
         },
